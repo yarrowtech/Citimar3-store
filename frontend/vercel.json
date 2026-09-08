@@ -7,7 +7,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://citimartstores.onrender.com/api/:path*"
+      "destination": "https://citimart3-store-backend.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",

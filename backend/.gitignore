@@ -1,0 +1,77 @@
+# ---------------------------------------------------------------------------
+# backend/.gitignore  --  Python side of the project.
+# Repo-wide rules (OS cruft, editor dirs, generic secret patterns) live in the
+# root .gitignore; this file only covers what is specific to backend/.
+# ---------------------------------------------------------------------------
+
+# --- Secrets ---------------------------------------------------------------
+# MONGODB_URI (Atlas), JWT_SECRET, *_INITIAL_PASSWORD. config/env.py pins its
+# env_file to this absolute path, so it is the one real secret file here.
+.env
+.env.*
+!.env.example
+
+# Live login dumps mirrored from config/auth_users.DEFAULT_PASSWORDS.
+CREDENTIALS*.txt
+LOGIN_CREDENTIALS*.txt
+
+# Streamlit's secrets store (.streamlit/config.toml itself IS committed --
+# it only pins the default theme).
+.streamlit/secrets.toml
+
+# --- Virtualenvs -----------------------------------------------------------
+.venv/
+venv/
+env/
+
+# --- Python bytecode / build artifacts -------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Test / type / lint caches ---------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# --- Generated data & runtime output ---------------------------------------
+# .cache/ = the pickled cleaned_master.pkl (rebuilt from DATASET.xlsx in ~90s)
+# and weather_cache.json -- derived output, never source.
+.cache/
+
+# Report exports written by src/reports/* and src/daily_report.py.
+reports/*
+!reports/.gitkeep
+
+# Admin-set KPI status-band overrides overlaid on config/kpi_thresholds._DEFAULTS
+# -- machine-local operator config, not source.
+config/kpi_thresholds.local.json
+
+# --- Workbooks -------------------------------------------------------------
+# DATASET.xlsx IS committed (Git LFS, see ../.gitattributes) -- app.py's
+# lifespan hard-fails without it. It stays "never modified" per CLAUDE.md.
+#
+# TEST_DAILY_DASHBOARD*.xlsx is the frozen archival copy + the no-Mongo local
+# testing fallback (db/xlsx_fallback.py). Local scaffolding, not source.
+TEST_DAILY_DASHBOARD*.xlsx
+~$*.xlsx
+
+# --- Misc ------------------------------------------------------------------
+*.log
+logs/
+*.bak
+*.orig
+*.rej
+*.tmp
+*.backup-*

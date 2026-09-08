@@ -1,0 +1,8 @@
+# Shared by both Streamlit apps (streamlit_app.py, streamlit_forecast_app.py),
+# which are launched from the repo root. This pins the *default* ("Default"
+# theme) look; the runtime "Neon" toggle (src/streamlit_theme.py) layers its own
+# CSS on top when selected and does not touch this file.
+[theme]
+base = "light"
+primaryColor = "#2563eb"
+font = "sans serif"

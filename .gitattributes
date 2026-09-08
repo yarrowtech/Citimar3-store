@@ -1,0 +1,2 @@
+graphify-out/graph.json merge=graphify
+backend/DATASET.xlsx filter=lfs diff=lfs merge=lfs -text

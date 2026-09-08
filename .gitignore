@@ -1,0 +1,88 @@
+# ---------------------------------------------------------------------------
+# Root .gitignore  --  repo-wide rules only.
+# Per-folder rules live next to the code they cover:
+#   backend/.gitignore   -- Python caches, .env, .cache/, reports/, workbooks
+#   frontend/.gitignore  -- node_modules/, dist/, Vite caches, .env
+# The secret/key patterns below are duplicated on purpose: they are the
+# safety net that catches a new secret file dropped anywhere in the tree.
+# ---------------------------------------------------------------------------
+
+# --- Secrets & credentials -- never commit ---------------------------------
+.env
+.env.*
+!.env.example
+*.env
+.envrc
+
+# Local secrets dumps (Atlas URI, JWT secret, live passwords).
+LOGIN_CREDENTIALS*.txt
+CREDENTIALS*.txt
+secrets/
+*.secret
+*.secrets
+
+# Keys / certs / cloud service-account files.
+*.pem
+*.key
+*.pfx
+*.p12
+*.pkcs12
+id_rsa*
+*serviceAccount*.json
+*service-account*.json
+gcp-*.json
+aws-credentials*
+.aws/
+credentials.json
+
+# --- Environments & dependencies (root-level) ------------------------------
+# The venv lives at the repo root even though all Python runs from backend/.
+.venv/
+venv/
+/node_modules/
+/package-lock.json
+
+# --- Generated / derived output --------------------------------------------
+# graphify's knowledge graph + AST cache -- rebuildable from source via
+# `graphify update .`, not itself source.
+graphify-out/
+
+# Claude Code tooling -- local dev assistant config/skills/doc, never published.
+.claude/
+/CLAUDE.md
+prompts-lib/
+
+# --- Catch-alls that must hold anywhere in the tree ------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+node_modules/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+~$*.xlsx
+
+# Backups / patch leftovers / scratch files.
+*.backup-*
+*.bak
+*.orig
+*.rej
+*.tmp
+
+# Logs and run-time output.
+*.log
+logs/
+
+# Root-level build output (subfolder builds are handled per folder).
+/build/
+/dist/
+
+# --- Editor / OS cruft -----------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

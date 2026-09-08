@@ -1,0 +1,44 @@
+# Netlify deployment config for the CITIMART SPA.
+# Mirror of vercel.json: proxy /api/* to the Render backend (same-origin from
+# the browser's view, so no CORS), then SPA-fallback everything else.
+#
+# In the Netlify UI set "Base directory" to `frontend` (this repo is a monorepo);
+# publish dir and build command below are then relative to it.
+
+[build]
+  base = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# --- redirects: first match wins, so the API proxy must come before the SPA fallback ---
+
+# Proxy API calls to Render. status=200 + force makes it a true reverse proxy
+# (URL stays on the Netlify origin); method, query string and the Authorization
+# header are forwarded.
+[[redirects]]
+  from = "/api/*"
+  to = "https://citimart3-store-backend.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# SPA fallback: serve index.html for any non-file path (hashed /assets/* are
+# real files and are served before this rule is consulted).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# --- caching, matching vercel.json ---
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

@@ -1,0 +1,33 @@
+name: Keep Render backend awake
+
+# Render's free web-service tier spins the container down after ~15 minutes with
+# no inbound traffic; the next request then pays a ~50s cold start. This job
+# pings the unauthenticated /api/health probe often enough that the service
+# never goes idle. It also keeps the in-process midnight finalize job
+# (src/daily_midnight_job.py) alive to actually fire at 00:00 IST.
+#
+# Note: GitHub's scheduled runs are best-effort and can be delayed 5-15 min when
+# the runners are busy, so this is "usually awake", not a hard guarantee. For a
+# firm guarantee use an external monitor (UptimeRobot / cron-job.org) or Render's
+# paid Starter tier, which does not sleep at all.
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (UTC)
+  workflow_dispatch: {}        # allow manual "Run workflow" from the Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Curl /api/health
+        run: |
+          for i in 1 2 3; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 60 \
+              https://citimart3-store-backend.onrender.com/api/health) && \
+              echo "attempt $i -> HTTP $code" && [ "$code" = "200" ] && exit 0
+            echo "attempt $i failed (HTTP ${code:-none}), retrying in 30s"
+            sleep 30
+          done
+          echo "health check did not return 200 after 3 attempts"
+          exit 1
